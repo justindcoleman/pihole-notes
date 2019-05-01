@@ -14,7 +14,7 @@ ran debug "pihole -d" which showed the following errors:
 i'm able to effectly dig google's dns servers ("dig google.com @127.0.0.1" & "dig google.com @8.8.8.8") & pihole-FTL is running on the correct ports - tcp&udp 53 (check via "sudo netstat -tulpn") so there's probably no firewall or port assigment issues
 verified the dnsamsq is not running ("sudo service dnsmasq status -l") and that there's an issue with lighttpd ("sudo service lighttpd status -l")
 "sudo netstat -nltup | grep 'Proto\|:53 \|:67 \|:80 \|:471'" appears to show all of the appropriate pihole-FTL services running on the right ports
-*****************after digging around for awhile i've determined the issue is with lighttpd and the basic install script, so i did (the potentially unsafe) curl -L install.pi-hole.net | bash
+*****************after digging around for awhile i've determined the issue is with lighttpd and the basic install script, so i did (the potentially unsafe) "curl -L install.pi-hole.net | bash" command in terminal
 this installed everything properly, howeveer, i'm still not blocking ads (i think)
 nslookup for doubleclick.com gives it no address which is a good sign but i'm still seeing ads on some sites
 "pihole restartdns" resolved the issue, i can now access the web interface and verified that it's blocking adverts on the VM
