@@ -1,0 +1,22 @@
+            IN THIS DOCUMENT ALWAYS IGNORE QUOTES, NEVER TYPE THEM IN
+
+started with a kubuntu vm in Hyper-V (1 core, 1gb ram, 25gb hd space [probably over kill]) and did a full install, then updated and upgraded
+installed git
+ran "git clone --depth 1 https://github.com/pi-hole/pi-hole.git Pi-hole"    ******(look at the other heavily asterisked line before running this command)
+ran into an issue with FTL not being installed so i edited etc/resolv.conf changed nameserver from 127.0.0.53 to 8.8.8.8 ("sudo nano /etc/resolv.conf" changed the numbers then ctrl-x, Y, enter to update the file) then ran "pihole -r"
+technically it was running but it wasn't doing anything (verified by doing an nslookup to doubleclick.com - which should have given me an address of my pihole, but didn't)
+restarted VM, started up pihole and restarted DNS (sudo pihole restartdns) then checked that the service was running "pihole status" which showed no issues
+still can't access the webinterface
+ran debug "pihole -d" which showed the following errors:
+    failed to resolve via localhost 127.0.0.1
+    failed to resolve via Pi-hole 192.168.1.2
+    lighttpd daemon is failed
+i'm able to effectly dig google's dns servers ("dig google.com @127.0.0.1" & "dig google.com @8.8.8.8") & pihole-FTL is running on the correct ports - tcp&udp 53 (check via "sudo netstat -tulpn") so there's probably no firewall or port assigment issues
+verified the dnsamsq is not running ("sudo service dnsmasq status -l") and that there's an issue with lighttpd ("sudo service lighttpd status -l")
+"sudo netstat -nltup | grep 'Proto\|:53 \|:67 \|:80 \|:471'" appears to show all of the appropriate pihole-FTL services running on the right ports
+****************after digging around for awhile i've determined the issue is with lighttpd and the basic install script, so i did (the potentially unsafe) curl -L install.pi-hole.net | bash
+this installed everything properly, howeveer, i'm still not blocking ads (i think)
+nslookup for doubleclick.com gives it no address which is a good sign but i'm still seeing ads on some sites
+"pihole restartdns" resolved the issue, i can now access the web interface and verified that it's blocking adverts on the VM
+
+
